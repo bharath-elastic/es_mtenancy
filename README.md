@@ -1,5 +1,5 @@
 # es_mtenancy
-Tool to create a multi-tenancy setup for training and workshops. Based on a csv that has spaces, roles and users to be created and assigned. User will be assiged corresponding role and role will have acccess to corresponding space. Spaces here are strictly used for multitenancy purposes and hence all features will be visible.
+Tool to create a multi-tenancy setup for training and workshops based on a csv that has spaces, roles and users to be created and assigned. Users will be assigned corresponding roles and roles will have acccess to corresponding spaces in the csv rows. Spaces here are only used for setting up multitenancy purposes and hence all features will be enabled.
 
 ## Installation
 
@@ -11,9 +11,10 @@ Tool to create a multi-tenancy setup for training and workshops. Based on a csv 
 user_name,space_name,role_name,role_model,pwd
 analyst-01,analyst-01,analyst-01,analyst,Same4Every1
 analyst-02,analyst-02,analyst-02,analyst,Same4Every1
+...
 ```
 
-3. Configure `config.yaml` file with cluster and login information. Alternatively copy the file and modify to create your own configuration file and use the `-c` flag when running the script. User below should have the privilege to `manage_security`. Script will ask you for password when run.
+3. Configure `config.yaml` file with cluster and login information. Alternatively copy the file and modify to create your own configuration file and use the `-c` flag when running the script. User below should have the privilege to `manage_security`. Don't provide password in yaml, script will ask you for password when run.
 
 ```
 url:
