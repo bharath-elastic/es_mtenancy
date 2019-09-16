@@ -4,7 +4,6 @@ from getpass import getpass
 import yaml
 import argparse
 from csv import DictReader
-from pprint import pprint
 
 
 ES_HEADERS = {'Content-Type': 'application/json'}
@@ -13,8 +12,8 @@ KIBANA_HEADERS = {'kbn-xsrf': 'true', 'Content-Type': 'application/json'}
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-a', '--action', help='action to take',
-                        choices={'create', 'delete'}, default='create')
+    parser.add_argument('-t', '--tear-down', action='store_true',
+                        help='tear down existing setup')
     parser.add_argument('-c', '--config', help='config file',
                         default='config.yaml')
     parser.add_argument('-p', '--provision', help='provisioning file',
@@ -59,10 +58,14 @@ def get_endpoints(url):
 def create_space(space_name):
     data = {'id': space_name, 'name': space_name,
             'initials': space_name[-2:]}
+    print(f'creating space {space_name}', end='...')
     res = requests.post(ENDPOINTS['space'],
                         headers=KIBANA_HEADERS, data=json.dumps(data),
                         timeout=TIMEOUT, auth=CREDS)
-    print(res.status_code)
+    if res.status_code == 200:
+        print('OK')
+    else:
+        print(res.json())
     return res
 
 
@@ -70,49 +73,65 @@ def create_role(row):
     model = get_role_model(row['role_model'])
     model['applications'][0]['resources'] = [f"space:{row['space_name']}"]
     role_endpoint = ENDPOINTS['role'] + row['role_name']
+    print(f"creating role {row['role_name']}", end='...')
     res = requests.put(role_endpoint,
                        headers=ES_HEADERS, data=json.dumps(model),
                        timeout=TIMEOUT, auth=CREDS)
-    print(res.status_code)
+    if res.status_code == 200:
+        print('OK')
+    else:
+        print(res.json())
     return res
 
 
 def create_user(row):
     user_name, _,role_name, _, pwd = row.values()
-    print(row)
-    print(user_name, role_name, pwd)
+    #print(row)
+    #print(user_name, role_name, pwd)
     user_doc = {'password': pwd, 'roles': [role_name]}
     user_endpoint = ENDPOINTS['user'] + user_name
+    print(f"creating user {row['user_name']}", end='...')
     res = requests.post(user_endpoint,
                         headers=ES_HEADERS,
                         data=json.dumps(user_doc),
                         auth=CREDS)
-    print(res.status_code)
-    pprint(res.json(), compact=True)
+    if res.status_code == 200:
+        print('OK')
+    else:
+        print(res.json())
     return res
 
 
 def delete_role(role_name):
     role_endpoint = ENDPOINTS['role'] + role_name
+    print(f'deleting role {role_name}', end='...')
     res = requests.delete(role_endpoint, auth=CREDS)
-    print(res.status_code)
-#    pprint(res.json())
+    if res.status_code == 200:
+        print('OK')
+    else:
+        print(res.json())
     return res
 
 
 def delete_space(space_name):
+    print(f'deleting space {space_name}', end='...')
     res = requests.delete(ENDPOINTS['space'] + f'/{space_name}',
                           headers=KIBANA_HEADERS,
                           timeout=TIMEOUT, auth=CREDS)
-    print(res.status_code)
-#    pprint(res.json(), compact=True)
+    if res.status_code == 204:
+        print('OK')
+    else:
+        print(res.json())
     return res
 
 
 def delete_user(user_name):
     del_user_endpoint = ENDPOINTS['user'] + user_name
+    print(f'delete user {user_name}', end='...')
     res = requests.delete(del_user_endpoint,
                           timeout=TIMEOUT, auth=CREDS)
+    if res.status_code == 200:
+        print('OK')
     return res
 
 
@@ -131,9 +150,9 @@ def create_setup():
 
 
 def main():
-    if ARGS.action == 'delete':
+    if ARGS.tear_down:
         delete_setup()
-    elif ARGS.action == 'create':
+    else:
         create_setup()
 
 
