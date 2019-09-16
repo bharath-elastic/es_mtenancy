@@ -1,0 +1,6 @@
+url:
+  kibana: http://localhost:5601
+  es: http://localhost:9200
+auth:
+  user: b
+
