@@ -1,7 +1,7 @@
 # es_mtenancy
 Tool to create a multi-tenancy setup for training and workshops based on a csv that has spaces, roles and users to be created and assigned. Users will be assigned corresponding roles and roles will have acccess to corresponding spaces in the csv rows. Spaces here are only used for setting up multitenancy purposes and hence all features will be enabled.
 
-[![HOWTO](https://img.youtube.com/vi/YOUTUBE_VIDEO_ID_HERE/0.jpg)](https://youtu.be/w8R0Qpwl5wc)
+[watch a demo](https://youtu.be/w8R0Qpwl5wc)
 
 ## Installation
 1. Clone repo
