@@ -2,7 +2,7 @@
 Tool to create a multi-tenancy setup for training and workshops based on a csv that has spaces, roles and users to be created and assigned. Users will be assigned corresponding roles and roles will have acccess to corresponding spaces in the csv rows. Spaces here are only used for setting up multitenancy purposes and hence all features will be enabled.
 
 ## Installation
-
+Script requires requests library and pyyam library. Install using `pip install -r requirements.txt`
 
 ## Usage
 1. Before you run the script, create a role that you want to use as `role_model` for privileges on resources.
